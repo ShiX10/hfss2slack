@@ -9,7 +9,7 @@ LICENSE_SERV="IP address of license server"
 SSH_ACCOUNT="account_name@$LICENSE_SERV"
 LMSTAT_CMD="path_of/lmutil lmstat -c 1055@$LICENSE_SERV -A"
 
-RUN_HFSS="path_of\ansysedtsv.exe"
+RUN_HFSS="path_of\ansysedt.exe"
 WORK_DIR="Your HFSS Directory"
 LOG_KEYWORDS=$(printf "%s|" \
     "Pass Number:" \
