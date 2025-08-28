@@ -12,7 +12,7 @@ SSH_ACCOUNT="account_name@$LICENSE_SERV"
 LMSTAT_CMD="path_of/lmutil lmstat -c 1055@$LICENSE_SERV -A"
 
 #Full path of HFSS
-RUN_HFSS="path_of\ansysedtsv.exe"
+RUN_HFSS="path_of\ansysedt.exe"
 #Your working directory for HFSS (on Windows, set a path that works for everyone)
 WORK_DIR="Your HFSS Directory"
 #Keywords for extaracting log
