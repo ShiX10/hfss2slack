@@ -99,7 +99,7 @@ MESSAGESTATUS=$(./send_slack_message.sh ":rocket: JOB SUBMITTED by *$USER_NAME* 
 TRACK_PID=$!
 
 wait $HFSS_PID
-pkill -P $TRACK_PID >/dev/null 2>&1
+kill $TRACK_PID >/dev/null 2>&1
 
-rm "$LOGFILE"
 ./send_slack_message.sh ":white_check_mark: Job Finished!" "$MESSAGESTATUS"
+rm "$LOGFILE"
