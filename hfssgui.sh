@@ -10,10 +10,10 @@ END_TIME=$(date -d "+$(echo "$HOURS * 60" | bc | cut -d. -f1) minutes" "+%Y-%m-%
 if [ "$SHARED_LICENSE" = "True" ]; then
 
     IP=$(hostname -I | grep -oE '\b([0-9]{1,3}\.){3}[0-9]{1,3}\b')
-    if [ IP != "$LICENSE_SERV" ]; then
+    if [ "$IP" != "$LICENSE_SERV" ]; then
         output=$(ssh "$SSH_ACCOUNT" "$LMSTAT_CMD")
     else
-        output=$("$LMSTAT_CMD")
+        output="$LMSTAT_CMD"
     fi
 
     gui_line=$(echo "$output" | grep "electronics_desktop:")
