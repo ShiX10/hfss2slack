@@ -5,7 +5,7 @@ USER_NAME=$(whoami)
 HOURS=${1:-1}
 END_TIME=$(date -d "+$(echo "$HOURS * 60" | bc | cut -d. -f1) minutes" "+%Y-%m-%d %H:%M")
 if [ "$OS" = "W" ]; then
-WORK_DIR=$(wslpath -u "$WORK_DIR")
+    WORK_DIR=$(wslpath -u "$WORK_DIR")
 fi
 LOGFILE="$(date +%Y%m%d_%H%M%S_%N).log"
 
@@ -81,8 +81,8 @@ else
 fi
 
 if [ "$OS" = "W" ]; then
-JOBFILE=$(wslpath -w "$JOBFILE")
-RUN_HFSS=$(wslpath -u "$RUN_HFSS")
+    JOBFILE=$(wslpath -w "$JOBFILE")
+    RUN_HFSS=$(wslpath -u "$RUN_HFSS")
 fi
 "$RUN_HFSS" \
     -monitor \
@@ -95,11 +95,14 @@ HFSS_PID=$!
 
 MESSAGESTATUS=$(./send_slack_message.sh ":rocket: JOB SUBMITTED by *$USER_NAME* on *$HOSTNAME*! \n\`Estimated Time to End : $END_TIME\`")
 
-./track_log.sh "$LOGFILE" "$LOG_KEYWORDS" "$MESSAGESTATUS" &
-TRACK_PID=$!
-
-wait $HFSS_PID
-kill $TRACK_PID >/dev/null 2>&1
+if [ "$SEND_LOG" = "True" ]; then
+    ./track_log.sh "$LOGFILE" "$LOG_KEYWORDS" "$MESSAGESTATUS" &
+    TRACK_PID=$!
+    wait $HFSS_PID
+    kill $TRACK_PID >/dev/null 2>&1
+else
+    wait $HFSS_PID
+fi
 
 ./send_slack_message.sh ":white_check_mark: Job Finished!" "$MESSAGESTATUS"
 rm "$LOGFILE"
