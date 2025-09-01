@@ -61,7 +61,7 @@ else
             --width="400"
     )
 fi
-if [ -z "$JOBFILE" ]; then
+if [ -z "$DESIGN" ]; then
     exit 1
 fi
 
@@ -110,7 +110,7 @@ else
 
     CONFIG="$SETUP|$OPTIMETRIC"
 fi
-if [ -z "$JOBFILE" ]; then
+if [ -z "$CONFIG" ]; then
     exit 1
 fi
 
