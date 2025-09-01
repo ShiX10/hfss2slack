@@ -39,7 +39,7 @@ if [ -z "$JOBFILE" ]; then
     exit 1
 fi
 
-DESIGNS=$(grep -oP "DesignName=[\"']\K[^\"']+" "$JOBFILE" | paste -sd'!' -)
+DESIGNS=$(grep -a -oP "DesignName=[\"']\K[^\"']+" "$JOBFILE" | paste -sd'!' -)
 
 if $USE_YAD; then
     DESIGN=$(
