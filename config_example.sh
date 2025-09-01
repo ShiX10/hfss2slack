@@ -6,7 +6,7 @@ OS="W"
 #HFSS
 #If license is shared with other PC ("True" or "False")
 SHARED_LICENSE="True"
-#When $SHARED_LICENSE is “True”, edit the three lines below.
+#When $SHARED_LICENSE is "True", edit the three lines below.
 LICENSE_SERV="IP address of license server"
 SSH_ACCOUNT="account_name@$LICENSE_SERV"
 LMSTAT_CMD="path_of/lmutil lmstat -c 1055@$LICENSE_SERV -A"
