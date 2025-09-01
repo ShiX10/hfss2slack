@@ -13,7 +13,7 @@ if [ "$SHARED_LICENSE" = "True" ]; then
     if [ "$IP" != "$LICENSE_SERV" ]; then
         output=$(ssh "$SSH_ACCOUNT" "$LMSTAT_CMD")
     else
-        output="$LMSTAT_CMD"
+        output=$(eval "$LMSTAT_CMD")
     fi
 
     gui_line=$(echo "$output" | grep "electronics_desktop:")
