@@ -34,4 +34,4 @@ SEND_LOG="True"
 
 #YAD (Size of dialogue windows for hfsssub.sh)
 YADHEIGHT=200
-YADWIDTH=400
+YADWIDTH=40

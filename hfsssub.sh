@@ -9,31 +9,59 @@ if [ "$OS" = "W" ]; then
 fi
 LOGFILE="$(date +%Y%m%d_%H%M%S_%N).log"
 
-if ! JOBFILE=$(
-    yad --file \
-        --title="Select simulation file" \
-        --filename="$WORK_DIR" \
-        --file-filter=' .aedt | *.aedt *.AEDT' \
-        --file-filter=' | *' \
-        --separator="," \
-        --width="500" \
-        --height="250" \
-        --center
-); then
+if command -v yad >/dev/null 2>&1; then
+    USE_YAD=true
+else
+    USE_YAD=false
+fi
+
+if $USE_YAD; then
+    JOBFILE=$(
+        yad --file \
+            --title="Select simulation file" \
+            --filename="$WORK_DIR" \
+            --file-filter=' .aedt | *.aedt *.AEDT' \
+            --file-filter=' | *' \
+            --separator="," \
+            --width="500" \
+            --height="250" \
+            --center
+    )
+else
+    JOBFILE=$(
+        zenity --file-selection \
+            --title="Select simulation file" \
+            --filename="$WORK_DIR" \
+            --file-filter="AEDT files | *.aedt"
+    )
+fi
+if [ -z "$JOBFILE" ]; then
     exit 1
 fi
 
 DESIGNS=$(grep -oP "DesignName=[\"']\K[^\"']+" "$JOBFILE" | paste -sd'!' -)
 
-if ! DESIGN=$(
-    yad --form \
-        --title="Select design" \
-        --item-separater='!' \
-        --field="Designs":CB "$DESIGNS" \
-        --width="$YADWIDTH" \
-        --height="$YADHEIGHT" \
-        --center
-); then
+if $USE_YAD; then
+    DESIGN=$(
+        yad --form \
+            --title="Select design" \
+            --item-separater='!' \
+            --field="Designs":CB "$DESIGNS" \
+            --width="$YADWIDTH" \
+            --height="$YADHEIGHT" \
+            --center
+    )
+else
+    DESIGN=$(
+        echo "$DESIGNS" | tr '!' '\n' |
+            zenity --list \
+            --title="Select design" \
+            --column="Designs" \
+            --height="300" \
+            --width="400"
+    )
+fi
+if [ -z "$JOBFILE" ]; then
     exit 1
 fi
 
@@ -58,17 +86,31 @@ OPTIMETRICS=$(echo "$BLOCK" |
     tr -d "'" |
     tail -n +2 |
     paste -sd'!' -)
+if $USE_YAD; then
+    CONFIG=$(
+        yad --form \
+            --title="Simulation Configs ($JOBFILE/$DESIGN)" \
+            --item-separater='!' \
+            --field="Setups":CB "$SETUPS" \
+            --field="Optimetrics":CB "None!$OPTIMETRICS" \
+            --width="$YADWIDTH" \
+            --height="$YADHEIGHT" \
+            --center
+    )
+else
+    SETUP=$(
+        echo "$SETUPS" | tr '!' '\n' |
+            zenity --list --title="Select Setup" --column="Setups" --height=300 --width=400
+    ) || exit 1
 
-if ! CONFIG=$(
-    yad --form \
-        --title="Simulation Configs ($JOBFILE/$DESIGN)" \
-        --item-separater='!' \
-        --field="Setups":CB "$SETUPS" \
-        --field="Optimetrics":CB "None!$OPTIMETRICS" \
-        --width="$YADWIDTH" \
-        --height="$YADHEIGHT" \
-        --center
-); then
+    OPTIMETRIC=$(
+        echo -e "None\n$(echo "$OPTIMETRICS" | tr '!' '\n')" |
+            zenity --list --title="Select Optimetrics" --column="Optimetrics" --height=300 --width=400
+    ) || exit 1
+
+    CONFIG="$SETUP|$OPTIMETRIC"
+fi
+if [ -z "$JOBFILE" ]; then
     exit 1
 fi
 
